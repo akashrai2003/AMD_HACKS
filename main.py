@@ -14,6 +14,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 from peft import PeftModel
 import argparse
 from datetime import datetime
+import random 
 
 class CompetitionAgent:
     """Unified agent for both question generation and answer solving"""
@@ -30,9 +31,10 @@ class CompetitionAgent:
             self.checkpoint_dir = "checkpoints/question_agent_sft"
         else:
             self.checkpoint_dir = "checkpoints/answer_agent_sft"
+
         
         self.system_prompts = self._load_system_prompts()
-        
+
     def _load_system_prompts(self) -> Dict[str, str]:
         """Load optimized system prompts"""
         if self.agent_type == "question":
@@ -484,8 +486,12 @@ Output:
         
         # Use optimized prompt for Number Series
         system_prompt = self.system_prompts["default"]
-        user_prompt = f"""Create an extremely difficult question from randomly picking out a topic from these three:
-        "blood_relations"/"seating_arrangement"/"truth_lie" """
+
+        topics_str = ["truth_lie","blood_relations","seating_arrangement"]
+        topic = random.choice(topics_str)
+        
+        user_prompt = f"""Create an extremely difficult question from the topic given below:{topic}
+         """
         
         # Generate question
         messages = [
